@@ -1,28 +1,70 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="container">
+    <MyHeader></MyHeader>
+    <MyList :list="list" @subCount="subCount" @addCount="addCount"></MyList>
+    <MyFooter :list="list"></MyFooter>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MyHeader from './components/MyHeader'
+import MyFooter from './components/MyFooter'
+import MyList from './components/MyList'
 
 export default {
   name: 'App',
+  data() {
+    return {
+      list: JSON.parse(localStorage.getItem('goodsList')) || [],
+    }
+  },
+  methods: {
+    subCount(id) {
+      this.list.forEach((obj) => {
+        if (obj.id === id && obj.count >= 1) {
+          obj.count--
+        }
+      })
+    },
+    addCount(id) {
+      this.list.forEach((obj) => {
+        if (obj.id === id) {
+          obj.count++
+        }
+      })
+    },
+  },
+  watch: {
+    list: {
+      deep: true,
+      handler() {
+        localStorage.setItem('goodsList', JSON.stringify(this.list))
+      },
+    },
+  },
   components: {
-    HelloWorld
-  }
+    MyHeader,
+    MyFooter,
+    MyList,
+  },
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+li {
+  list-style: none;
+}
+
+/* 总盒子 */
+.container {
+  margin: 0 auto;
+  width: 500px;
+  background-color: #ddd;
 }
 </style>
